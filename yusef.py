@@ -7,7 +7,7 @@ def build_deck() -> list:
     for suit in suits:
         for i in range(1,14):
             if i==1:
-                deck.append('Ace of '+suit)
+                deck.append('A of '+suit)
             elif i == 11:
                 deck.append('J of '+suit)
             elif i==12:
@@ -39,7 +39,28 @@ def deal_hands(deck:list,numHands:int,sizeHand:int) -> list:
         numHands-=1
     return hands
 
+def get_sums(decks:list) -> list:
+    sums=[]
+    for i,deck in enumerate(decks):
+        sumDeck=0
+        for card in deck:
+            value=card[:2].strip()
+            if value=="A":
+                sumDeck+=1
+            elif value=="J":
+                sumDeck+=10
+            elif value=="Q":
+                sumDeck+=10
+            elif value=="K":
+                sumDeck+=10
+            else:
+                sumDeck+=int(value)
+        sums.append(sumDeck)
+    return sums
+
 myDeck=shuffle_deck(build_deck())
 myFirstCard=deal_top_card(myDeck)
 myHands=deal_hands(myDeck,2,5)
+mySums=get_sums(myHands)
 print(myHands)
+print(mySums)
