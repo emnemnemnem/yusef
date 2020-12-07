@@ -1,45 +1,49 @@
 #two-player yusef
 from random import shuffle
 
-def build_deck() -> list:
-    deck=[]
-    suits=['Hearts','Diamonds','Clubs','Spades']
-    for suit in suits:
-        for i in range(1,14):
-            if i==1:
-                deck.append('A of '+suit)
-            elif i == 11:
-                deck.append('J of '+suit)
-            elif i==12:
-                deck.append('Q of '+suit)
-            elif i==13:
-                deck.append('K of '+suit)
-            else:
-                deck.append(str(i)+' of '+suit)
-    deck.append("Joker")
-    deck.append("Joker")
-    return deck
+class Card:
+    def __init__(self,suit,val):
+        self.suit=suit
+        self.val=val
 
-def shuffle_deck(deck:list) -> list:
-    shuffle(deck)
-    return deck
+    def show(self):
+        print("{} of {}".format(self.val,self.suit))
 
-def deal_top_card(deck:list) -> str:
-    card=deck.pop()
-    return card
+class Deck:
+    def __init__(self):
+        self.cards=[]
+        self.build()
 
-def deal_hands(deck:list,numHands:int,sizeHand:int) -> list:
-    hands=[]
-    while numHands>0 and len(deck)>0:
-        hand=[]
-        origSizeHand=sizeHand
-        while sizeHand>0 and len(deck)>0:
-            hand.append(deck.pop())
-            sizeHand-=1
-        sizeHand=origSizeHand
-        hands.append(hand)
-        numHands-=1
-    return hands
+    def build(self):
+        suits=['Hearts','Diamonds','Clubs','Spades']
+        for suit in suits:
+            for i in range(1,14):
+                self.cards.append(Card(suit,i))
+
+    def show(self):
+        for card in self.cards:
+            card.show()
+    
+    def shuffle(self):
+        shuffle(self.cards)
+
+    def drawCard(self):
+        return self.cards.pop()
+
+class Player:
+    def __init__(self,name):
+        self.name=name
+        self.hand=[]
+
+    def drawHand(self,deck,numberCards):
+        while numberCards!=0:
+            self.hand.append(deck.drawCard())
+            numberCards-=1
+        return self
+    
+    def showHand(self):
+        for card in self.hand:
+            card.show()
 
 def get_sums(decks:list) -> list:
     sums=[]
@@ -56,15 +60,27 @@ def get_sums(decks:list) -> list:
         sums.append(sumDeck)
     return sums
 
-myDeck=shuffle_deck(build_deck())
-# two players get five cards each
-myHands=deal_hands(myDeck,2,5)
+deck=Deck()
+deck.show()
+print("\n---------\n")
+deck.shuffle()
+deck.show()
+print("\n---------\n")
+deck.drawCard().show()
+print("\n---------\n")
+emily=Player("Emily")
+emily.drawHand(deck,5).showHand()
+print("\n---------\n")
+daniel=Player("Daniel")
+daniel.drawHand(deck,5).showHand()
 
-# draw from top
-myTopCard=deal_top_card(myDeck)
-while myTopCard[:2].strip() in ("Jo","A","2","3","4","5","6"):
-    myDeck.append(myTopCard)
-    myDeck=shuffle_deck(myDeck)
-    myTopCard=deal_top_card(myDeck)
+# drawing first card in yusef - must be >= 7
+print("\n---------\n")
+card=deck.drawCard()
+while card.val < 7:
+    deck.cards.append(card)
+    deck.shuffle()
+    card=deck.drawCard()
+card.show()
 
-# player 1 goes
+# emily's turn
