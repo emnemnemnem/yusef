@@ -41,20 +41,15 @@ def deal_hands(deck:list,numHands:int,sizeHand:int) -> list:
 
 def get_sums(decks:list) -> list:
     sums=[]
-    for i,deck in enumerate(decks):
+    for deck in decks:
         sumDeck=0
         for card in deck:
             value=card[:2].strip()
-            if value=="A":
-                sumDeck+=1
-            elif value=="J":
-                sumDeck+=10
-            elif value=="Q":
-                sumDeck+=10
-            elif value=="K":
-                sumDeck+=10
-            else:
-                sumDeck+=int(value)
+            if value=="A": sumDeck+=1
+            elif value=="J": sumDeck+=10
+            elif value=="Q": sumDeck+=10
+            elif value=="K": sumDeck+=10
+            else: sumDeck+=int(value)
         sums.append(sumDeck)
     return sums
 
