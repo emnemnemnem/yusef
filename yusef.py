@@ -89,10 +89,14 @@ class Player:
 class Game:
     def __init__(self):
         self.players = []
+        self.deck=Deck()
+        self.num_players=int(input("Input the number of players: \n"))
+        for i in range(0,self.num_players):
+            name=input("Input User {} Name: \n".format(i+1))
+            self.players.append(Player(name))
 
-    def start():
-        deck = Deck()
-        deck.shuffle()
+    def start(self):
+        self.deck.shuffle()
 
 def get_sums(decks:list) -> list:
     sums=[]
@@ -132,3 +136,5 @@ print("\n---------\n")
 #         if emily_card.val==dup:
 #             swapOut.append(emily_card)
 #     card=emily.swapCards(swapOut,card)
+
+userGame=Game()
