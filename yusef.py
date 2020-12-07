@@ -34,16 +34,41 @@ class Player:
     def __init__(self,name):
         self.name=name
         self.hand=[]
+        self.duplicates=dict([])
 
     def drawHand(self,deck,numberCards):
+        vals=set([])
         while numberCards!=0:
-            self.hand.append(deck.drawCard())
+            drawn=deck.drawCard()
+            self.hand.append(drawn)
+            if drawn.val not in vals:
+                vals.add(drawn.val)
+            else:
+                if drawn.val not in self.duplicates:
+                    self.duplicates[drawn.val]=2
+                else:
+                    self.duplicates[drawn.val]+=1
+                sorted(self.duplicates,reverse=True)
             numberCards-=1
         return self
     
     def showHand(self):
         for card in self.hand:
             card.show()
+
+    def duplicateVals(self): # returns boolean
+        if self.duplicates is not None:
+            return True
+        else:
+            return False
+    
+    def maxVal(self): # returns max value
+        maximum=0
+        for card in self.hand:
+            if card.val > maximum:
+                maximum=card.val
+        return maximum
+
 
 def get_sums(decks:list) -> list:
     sums=[]
@@ -84,3 +109,6 @@ while card.val < 7:
 card.show()
 
 # emily's turn
+if emily.duplicateVals()==True and next(iter(emily.duplicates))*emily.duplicates[next(iter(emily.duplicates))] <= card:
+    # replace emily's duplicate values in hand with card
+    
