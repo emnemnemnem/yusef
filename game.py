@@ -8,7 +8,7 @@ def show_hand(screen, player):
     for card in player.hand:
         card.position_x, card.position_y = x, y
         screen.blit(card.show(), (x, y))
-        #x += card.horizontal_demension + space_between_cards
+        x += card.horizontal_demension + space_between_cards
 
 def select_card(player, mouse_x, mouse_y):
     """Player selects a card to play"""
@@ -24,10 +24,10 @@ def select_card(player, mouse_x, mouse_y):
 def load_card_images(player):
     "Loads image, and demensions to card objects"
     for card in player.hand:
-        card.image = pygame.image.load("Cards/" + str(card) + ".png")
-        width, hieght = card.image.get_size()
-        card.horizontal_demension = width
-        card.vertical_demension = hieght
+        card.image = pygame.image.load("deck/" + str(card.val) +"-"+card.suit + ".jpeg")
+        horizontal, vertical = card.image.get_size()
+        card.width = horizontal
+        card.height = vertical
 
 def play_selected_card(screen, player):
     """Display card that is selected on pygame display object"""
@@ -98,9 +98,9 @@ def main():
     turn_count = 1
 
     deck = Deck()
-    deck.deck_shuffle()
-    player1 = Player(input("Player 1 name: "), hand = deck.draw(number_of_cards), turn = True)
-    player2 = Player(input("Player 2 name: "), hand = deck.draw(number_of_cards))
+    deck.shuffle()
+    #player1 = Player(input("Player 1 name: "), hand = deck.draw(number_of_cards), turn = True)
+    #player2 = Player(input("Player 2 name: "), hand = deck.draw(number_of_cards))
 
     pygame.init()
     screen = pygame.display.set_mode((sc_width, sc_height))
