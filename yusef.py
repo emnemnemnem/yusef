@@ -86,6 +86,13 @@ class Player:
         del self.duplicates[toSwap[0].val]
         return toSwap[0]
 
+class Game:
+    def __init__(self):
+        self.players = []
+
+    def start():
+        deck = Deck()
+        deck.shuffle()
 
 def get_sums(decks:list) -> list:
     sums=[]
