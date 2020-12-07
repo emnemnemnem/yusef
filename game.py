@@ -7,19 +7,23 @@ def show_hand(screen, player):
     x, y, space_between_cards = 5, 462, 5
     for card in player.hand:
         card.position_x, card.position_y = x, y
-        screen.blit(card.show(), (x, y))
-        x += card.horizontal_demension + space_between_cards
+        screen.blit(card.image, (x, y))
+        x += card.width + space_between_cards
 
 def select_card(player, mouse_x, mouse_y):
-    """Player selects a card to play"""
+    """Player selects a card in hand to play"""
     if mouse_x:
         for card in player.hand:
-            lower_x, upper_x = (card.position_x, card.position_x + card.horizontal_demension)
-            lower_y, upper_y = (card.position_y, card.position_y + card.vertical_demension)
+            lower_x, upper_x = (card.position_x, card.position_x + card.width)
+            lower_y, upper_y = (card.position_y, card.position_y + card.height)
 
             if mouse_x > lower_x and mouse_x < upper_x:
                 if mouse_y > lower_y and mouse_y < upper_y:
                     player.selected_card = card
+
+def select_deck(player,mouse_x,mouse_y):
+    """Player selects face-up or face-down deck"""
+
 
 def load_card_images(player):
     "Loads image, and demensions to card objects"
@@ -83,29 +87,21 @@ def winner_goes_first(winner, loser):
     loser.turn = False
 
 def main():
-    """GAME of war, each player is given a hand of 10 cards, on each turn a player will select a card to play,
-    players cards will be compared and the player with the greater in value card will be assigned a point for round victory.
-    When all cards in hand have been played game ends and winner is displayed
-
-    """
-
     sc_width, sc_height = 555, 555
     selected_card_y_pos_player_1 = 330
     selected_card_y_pos_player_2 = 230
     font_size = 30
     delay_time_ms = 1000
-    number_of_cards = 10
+    number_of_cards = 5
     turn_count = 1
 
-    deck = Deck()
-    deck.shuffle()
-    #player1 = Player(input("Player 1 name: "), hand = deck.draw(number_of_cards), turn = True)
-    #player2 = Player(input("Player 2 name: "), hand = deck.draw(number_of_cards))
+    game=Game()
+    game.start()
 
     pygame.init()
     screen = pygame.display.set_mode((sc_width, sc_height))
-    load_card_images(player1)
-    load_card_images(player2)
+    for player in game.players:
+        load_card_images(player)
 
     pygame.font.init()
     my_font = pygame.font.SysFont('Times New Roman', font_size)
@@ -123,6 +119,13 @@ def main():
                 quit()
             if event.type == pygame.MOUSEBUTTONUP:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        for player in game.players:
+            if player.turn:
+                show_hand(screen, player)
+                turn(player, mouse_x, mouse_y, selected_card_y_pos_player_1)
+                if player1.selected_card:
+                    flip_turns(player1, player2)
 
         if player1.turn:
             show_hand(screen, player1)

@@ -8,6 +8,7 @@ class Card:
         self.image=None
         self.width=None
         self.height=None
+        self.position_x, self.position_y = 0,0
 
     def show(self):
         print("{} of {}".format(self.val,self.suit))
@@ -47,6 +48,7 @@ class Player:
         self.name=name
         self.hand=[]
         self.duplicates=dict([])
+        self.turn=False
 
     def drawHand(self,deck,numberCards):
         vals=set([])
@@ -103,6 +105,16 @@ class Game:
         for player in self.players:
             player.drawHand(self.deck,5)
         self.deck.drawFirstCard()
+        self.players[0].turn=True
+
+    def switchTurn(self):
+        for i,player in self.players:
+            if player.turn==True:
+                player.turn=False
+                if i==len(self.players-1):
+                    self.players[0].turn=True
+                else:
+                    self.players[i+1].turn=True
 
 def get_sums(decks:list) -> list:
     sums=[]
@@ -119,7 +131,7 @@ def get_sums(decks:list) -> list:
         sums.append(sumDeck)
     return sums
 
-deck=Deck()
+""" deck=Deck()
 print("\n---------\n")
 deck.shuffle()
 deck.show()
@@ -131,7 +143,7 @@ daniel=Player("Daniel")
 daniel.drawHand(deck,5).showHand()
 
 # drawing first card in yusef - must be >= 7
-print("\n---------\n")
+print("\n---------\n") """
 
 # emily's turn
 # if emily.duplicateVals()==True and next(iter(emily.duplicates))*emily.duplicates[next(iter(emily.duplicates))] <= card:
@@ -143,4 +155,4 @@ print("\n---------\n")
 #             swapOut.append(emily_card)
 #     card=emily.swapCards(swapOut,card)
 
-userGame=Game()
+#userGame=Game()
