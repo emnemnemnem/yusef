@@ -57,8 +57,14 @@ def get_sums(decks:list) -> list:
     return sums
 
 myDeck=shuffle_deck(build_deck())
-myFirstCard=deal_top_card(myDeck)
+# two players get five cards each
 myHands=deal_hands(myDeck,2,5)
-mySums=get_sums(myHands)
-print(myHands)
-print(mySums)
+
+# draw from top
+myTopCard=deal_top_card(myDeck)
+while myTopCard[:2].strip() in ("Jo","A","2","3","4","5","6"):
+    myDeck.append(myTopCard)
+    myDeck=shuffle_deck(myDeck)
+    myTopCard=deal_top_card(myDeck)
+
+# player 1 goes
