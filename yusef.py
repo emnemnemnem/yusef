@@ -97,6 +97,9 @@ class Game:
 
     def start(self):
         self.deck.shuffle()
+        for player in self.players:
+            player.drawHand(self.deck,5)
+        self.deck.drawFirstCard()
 
 def get_sums(decks:list) -> list:
     sums=[]
