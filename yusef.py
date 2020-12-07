@@ -16,6 +16,8 @@ def build_deck() -> list:
                 deck.append('K of '+suit)
             else:
                 deck.append(str(i)+' of '+suit)
+    deck.append("Joker")
+    deck.append("Joker")
     return deck
 
 def shuffle_deck(deck:list) -> list:
@@ -49,6 +51,7 @@ def get_sums(decks:list) -> list:
             elif value=="J": sumDeck+=10
             elif value=="Q": sumDeck+=10
             elif value=="K": sumDeck+=10
+            elif value=="Jo": sumDeck+=0
             else: sumDeck+=int(value)
         sums.append(sumDeck)
     return sums
