@@ -69,6 +69,13 @@ class Player:
                 maximum=card.val
         return maximum
 
+    def swapCards(self, toSwap, replaceWith): # returns the cards that i put back onto deck pile
+        for card in self.hand:
+            if card in toSwap:
+                self.hand.remove(card)
+        self.hand.extend(replaceWith)
+        return toSwap
+
 
 def get_sums(decks:list) -> list:
     sums=[]
@@ -86,12 +93,9 @@ def get_sums(decks:list) -> list:
     return sums
 
 deck=Deck()
-deck.show()
 print("\n---------\n")
 deck.shuffle()
 deck.show()
-print("\n---------\n")
-deck.drawCard().show()
 print("\n---------\n")
 emily=Player("Emily")
 emily.drawHand(deck,5).showHand()
@@ -111,4 +115,7 @@ card.show()
 # emily's turn
 if emily.duplicateVals()==True and next(iter(emily.duplicates))*emily.duplicates[next(iter(emily.duplicates))] <= card:
     # replace emily's duplicate values in hand with card
+    dup=next(iter(emily.duplicates))
+    swapOut=[]
     
+    card=emily.swapCards()
