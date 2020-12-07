@@ -12,6 +12,7 @@ class Card:
 class Deck:
     def __init__(self):
         self.cards=[]
+        self.faceUp=[]
         self.build()
 
     def build(self):
@@ -29,6 +30,14 @@ class Deck:
 
     def drawCard(self):
         return self.cards.pop()
+    
+    def drawFirstCard(self):
+        card=deck.drawCard()
+        while card.val < 7:
+            deck.cards.append(card)
+            deck.shuffle()
+            card=deck.drawCard()
+        self.faceUp.append(card)
 
 class Player:
     def __init__(self,name):
@@ -69,12 +78,13 @@ class Player:
                 maximum=card.val
         return maximum
 
-    def swapCards(self, toSwap, replaceWith): # returns the cards that i put back onto deck pile
+    def swapCards(self, toSwap:list, replaceWith:Card): # returns the cards that i put back onto deck pile
         for card in self.hand:
             if card in toSwap:
                 self.hand.remove(card)
-        self.hand.extend(replaceWith)
-        return toSwap
+        self.hand.append(replaceWith)
+        del self.duplicates[toSwap[0].val]
+        return toSwap[0]
 
 
 def get_sums(decks:list) -> list:
@@ -105,17 +115,13 @@ daniel.drawHand(deck,5).showHand()
 
 # drawing first card in yusef - must be >= 7
 print("\n---------\n")
-card=deck.drawCard()
-while card.val < 7:
-    deck.cards.append(card)
-    deck.shuffle()
-    card=deck.drawCard()
-card.show()
 
 # emily's turn
-if emily.duplicateVals()==True and next(iter(emily.duplicates))*emily.duplicates[next(iter(emily.duplicates))] <= card:
-    # replace emily's duplicate values in hand with card
-    dup=next(iter(emily.duplicates))
-    swapOut=[]
-    
-    card=emily.swapCards()
+# if emily.duplicateVals()==True and next(iter(emily.duplicates))*emily.duplicates[next(iter(emily.duplicates))] <= card:
+#     # replace emily's duplicate values in hand with card
+#     dup=next(iter(emily.duplicates))
+#     swapOut=[]
+#     for emily_card in emily.hand:
+#         if emily_card.val==dup:
+#             swapOut.append(emily_card)
+#     card=emily.swapCards(swapOut,card)
