@@ -114,7 +114,19 @@ def main():
     while game_is_running:
         screen.fill((252,204,210))
         screen.blit(firstCard.image, (300, 200))
+        firstCard.position_x, firstCard.position_y = 300, 200
+        horizontal, vertical = firstCard.image.get_size()
+        firstCard.width = horizontal
+        firstCard.height = vertical
+        firstCard.rect=pygame.Rect(firstCard.position_x,firstCard.position_y,firstCard.width,firstCard.height)
+
         screen.blit(face_down.image, (200, 200))
+        face_down.position_x, face_down.position_y = 300, 200
+        horizontal, vertical = face_down.image.get_size()
+        face_down.width = horizontal
+        face_down.height = vertical
+        face_down.rect=pygame.Rect(face_down.position_x,face_down.position_y,face_down.width,face_down.height)
+
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -132,6 +144,11 @@ def main():
                         for c in clicked_cards:
                             player.selected_card=c
                             player.selected_card.show()
+                        if firstCard.rect.collidepoint(pos):
+                            player.swapCards([player.selected_card],firstCard)
+                        elif face_down.rect.collidepoint(pos):
+                            player.swapCards([player.selected_card],face_down)
+                        
                 #turn(player)
                 #print("player turn")
                 #if player.done:
