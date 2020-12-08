@@ -110,7 +110,7 @@ def main():
     #Main Game Loop
     game_is_running = True
     while game_is_running:
-        screen.fill((0,200,50))
+        screen.fill((252,204,210))
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
