@@ -54,7 +54,7 @@ class Player:
         self.duplicates=dict([])
         self.turn=False
         self.done=False
-        self.selected_card=None
+        self.selected_card=[] # list of selected cards
 
     def drawHand(self,deck:Deck,numberCards:int,face_down:bool): # from face-down pile. eventually, *** i could make another parameter - true or false for face-down or face-up
         while numberCards!=0:
@@ -83,10 +83,12 @@ class Player:
     def swap_cards(self, deck:Deck, face_down:bool): 
         # puts toSwap onto face up, no matter what
         # either removes from face down or face up pile
-        to_swap=self.selected_card
-        self.hand.remove(to_swap)
+        to_swap=self.selected_card # this is a list
+        for card in to_swap:
+            self.hand.remove(card)
         self.drawHand(deck,1,face_down)
-        deck.faceUp.append(to_swap)
+        for card in to_swap:
+            deck.faceUp.append(card)
 
 class Game:
     def __init__(self):
@@ -107,8 +109,38 @@ class Game:
     def switch_turn(self):
         for i,player in enumerate(self.players):
             if player.turn:
-                player.turn=False
+                player.turn=not player.turn
                 if i==len(self.players)-1:
                     self.players[0].turn=True
                 else:
                     self.players[i+1].turn=True
+                break
+
+class button():
+    def __init__(self, color, x,y,width,height, text=''):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+
+    def draw(self,win,outline=None):
+        #Call this method to draw the button on the screen
+        if outline:
+            pygame.draw.rect(win, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0)
+            
+        pygame.draw.rect(win, self.color, (self.x,self.y,self.width,self.height),0)
+        
+        if self.text != '':
+            font = pygame.font.SysFont('Arial', 20)
+            text = font.render(self.text, 1, (0,0,0))
+            win.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))
+
+    def isOver(self, pos):
+        #Pos is the mouse position or a tuple of (x,y) coordinates
+        if pos[0] > self.x and pos[0] < self.x + self.width:
+            if pos[1] > self.y and pos[1] < self.y + self.height:
+                return True
+            
+        return False
