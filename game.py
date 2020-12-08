@@ -1,5 +1,5 @@
-from yusef import *
 import pygame
+from yusef import *
 green = (0, 200, 50)
 
 def show_hand(screen, player):
@@ -7,28 +7,27 @@ def show_hand(screen, player):
     x, y, space_between_cards = 5, 462, 5
     for card in player.hand:
         card.position_x, card.position_y = x, y
+        card.rect=pygame.Rect(card.position_x,card.position_y,card.width,card.height)
         screen.blit(card.image, (x, y))
         x += card.width + space_between_cards
 
-def select_card(player, mouse_x, mouse_y):
+def select_card(player):
     """Player selects a card in hand to play"""
-    if mouse_x:
+    print(player.selected_card)
+    while player.selected_card is None:
         for card in player.hand:
-            lower_x, upper_x = (card.position_x, card.position_x + card.width)
-            lower_y, upper_y = (card.position_y, card.position_y + card.height)
+            if card.isClicked():
+                player.selected_card = card
+    print(player.selected_card)
 
-            if mouse_x > lower_x and mouse_x < upper_x:
-                if mouse_y > lower_y and mouse_y < upper_y:
-                    player.selected_card = card
-
-def select_deck(player,mouse_x,mouse_y):
+#def select_deck(player,mouse_x,mouse_y):
     """Player selects face-up or face-down deck"""
 
 
 def load_card_images(player):
-    "Loads image, and demensions to card objects"
+    "Loads image, and dimensions to card objects"
     for card in player.hand:
-        card.image = pygame.image.load("deck/" + str(card.val) +"-"+card.suit + ".jpeg")
+        card.image = pygame.image.load("deck/" + str(card.val) +"-"+str(card.suit)+".jpg")
         horizontal, vertical = card.image.get_size()
         card.width = horizontal
         card.height = vertical
@@ -70,16 +69,17 @@ def show_player_scores(screen, player1, player2):
     screen.blit(textsurface1, (0,0))
     screen.blit(textsurface2, (470,0))
 
-def flip_turns(player1, player2):
-    """Negates Turn attributes of player1 and player2"""
-    player1.turn = not player1.turn
-    player2.turn = not player2.turn
+def getCoords(x,y):
+    return [x,y]
 
-def turn(player, mouse_x, mouse_y, new_y_position):
-    """Player will select card using mouse_x, and mouse_y, card will be removed from hand and played"""
-    select_card(player, mouse_x, mouse_y)
-    player.remove_from_hand(player.selected_card)
-    update_selected_card_position(player, new_y_position)
+def turn(player):
+    print("start turn")
+    select_card(player)
+    print("finish turn")
+    #player.swapCards([player.selected_card],deck.drawCard())
+    #update_selected_card_position(player, new_y_position)
+    #player.done=True
+    #player.selected_card=None
 
 def winner_goes_first(winner, loser):
     """Sets the winner to the starter of the next round"""
@@ -88,20 +88,22 @@ def winner_goes_first(winner, loser):
 
 def main():
     sc_width, sc_height = 555, 555
-    selected_card_y_pos_player_1 = 330
-    selected_card_y_pos_player_2 = 230
+    selected_card_y_pos = 330
     font_size = 30
-    delay_time_ms = 1000
-    number_of_cards = 5
-    turn_count = 1
 
     game=Game()
     game.start()
+    print("Game has started")
+    firstCard=game.deck.faceUp[0]
+    firstCard.image=pygame.image.load("deck/" + str(firstCard.val) +"-"+str(firstCard.suit)+".jpg")
 
     pygame.init()
     screen = pygame.display.set_mode((sc_width, sc_height))
+    screen.fill(green)
+
     for player in game.players:
         load_card_images(player)
+    print("finished loading card images")
 
     pygame.font.init()
     my_font = pygame.font.SysFont('Times New Roman', font_size)
@@ -109,55 +111,43 @@ def main():
     """Main Game Loop"""
     game_is_running = True
     while game_is_running:
-        screen.fill(green)
-
-        mouse_x, mouse_y = None, None
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
                 game_is_running = False
                 quit()
-            if event.type == pygame.MOUSEBUTTONUP:
-                mouse_x, mouse_y = pygame.mouse.get_pos()
 
         for player in game.players:
             if player.turn:
                 show_hand(screen, player)
-                turn(player, mouse_x, mouse_y, selected_card_y_pos_player_1)
-                if player1.selected_card:
-                    flip_turns(player1, player2)
+                for event in events:
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        pos = pygame.mouse.get_pos()
+                        # get a list of all sprites that are under the mouse cursor
+                        clicked_cards = [c for c in player.hand if c.rect.collidepoint(pos)]
+                        for c in clicked_cards:
+                            c.show()
+                #turn(player)
+                #print("player turn")
+                #if player.done:
+                    #game.switchTurn()
+                    #player.done=False
 
-        if player1.turn:
-            show_hand(screen, player1)
-            turn(player1, mouse_x, mouse_y, selected_card_y_pos_player_1)
-            if player1.selected_card:
-                flip_turns(player1, player2)
-        else:
-            show_hand(screen, player2)
-            turn(player2, mouse_x, mouse_y, selected_card_y_pos_player_2)
-            if player2.selected_card:
-                flip_turns(player1, player2)
+        #show_player_scores(screen, player1, player2)
+        #pygame.display.update()
 
-        if player1.selected_card:
-            play_selected_card(screen, player1)
-        if player2.selected_card:
-            play_selected_card(screen, player2)
+        #winner = evaluate(player1,player2)
+        # if winner:
+        #     if winner == player1:
+        #         winner_goes_first(player1, player2)
+        #     else:
+        #         winner_goes_first(player2, player1)
 
-        show_player_scores(screen, player1, player2)
-        pygame.display.update()
-
-        winner = evaluate(player1,player2)
-        if winner:
-            if winner == player1:
-                winner_goes_first(player1, player2)
-            else:
-                winner_goes_first(player2, player1)
-
-        if not player1.hand and not player2.hand:
-            show_winner(screen, player1, player2, my_font)
-            pygame.display.update()
-            pygame.time.delay(delay_time_ms)
-            game_is_running = False
+        # if not player1.hand and not player2.hand:
+        #     show_winner(screen, player1, player2, my_font)
+        #     pygame.display.update()
+        #     pygame.time.delay(delay_time_ms)
+        #     game_is_running = False
 
 if __name__ == '__main__':
     main()

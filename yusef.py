@@ -1,4 +1,5 @@
 #two-player yusef
+import pygame
 from random import shuffle
 
 class Card:
@@ -9,9 +10,14 @@ class Card:
         self.width=None
         self.height=None
         self.position_x, self.position_y = 0,0
+        self.rect=None
 
     def show(self):
         print("{} of {}".format(self.val,self.suit))
+
+    def isClicked(self):
+        self.rect=pygame.Rect(self.position_x,self.position_y,self.width,self.height)
+        return pygame.mouse.get_pressed()[0] and self.rect.collidepoint(pygame.mouse.get_pos())
 
 class Deck:
     def __init__(self):
@@ -36,11 +42,11 @@ class Deck:
         return self.cards.pop()
     
     def drawFirstCard(self):
-        card=deck.drawCard()
+        card=self.drawCard()
         while card.val < 7:
-            deck.cards.append(card)
-            deck.shuffle()
-            card=deck.drawCard()
+            self.cards.append(card)
+            self.shuffle()
+            card=self.drawCard()
         self.faceUp.append(card)
 
 class Player:
@@ -49,6 +55,8 @@ class Player:
         self.hand=[]
         self.duplicates=dict([])
         self.turn=False
+        self.done=False
+        self.selected_card=None
 
     def drawHand(self,deck,numberCards):
         vals=set([])
@@ -88,7 +96,8 @@ class Player:
             if card in toSwap:
                 self.hand.remove(card)
         self.hand.append(replaceWith)
-        del self.duplicates[toSwap[0].val]
+        if toSwap[0] in self.duplicates:
+            del self.duplicates[toSwap[0].val]
         return toSwap[0]
 
 class Game:
@@ -108,10 +117,10 @@ class Game:
         self.players[0].turn=True
 
     def switchTurn(self):
-        for i,player in self.players:
+        for i,player in enumerate(self.players):
             if player.turn==True:
                 player.turn=False
-                if i==len(self.players-1):
+                if i==len(self.players)-1:
                     self.players[0].turn=True
                 else:
                     self.players[i+1].turn=True
