@@ -5,6 +5,7 @@ green = (0, 200, 50)
 def show_hand(screen, player):
     """Displays all cards in hand of player on pygame display object"""
     x, y, space_between_cards = 5, 462, 5
+    load_card_images(player)
     for card in player.hand:
         card.position_x, card.position_y = x, y
         card.rect=pygame.Rect(card.position_x,card.position_y,card.width,card.height)
@@ -111,6 +112,7 @@ def main():
 
     #Main Game Loop
     game_is_running = True
+    swapped=1
     while game_is_running:
         screen.fill((252,204,210))
         screen.blit(firstCard.image, (300, 200))
@@ -121,7 +123,7 @@ def main():
         firstCard.rect=pygame.Rect(firstCard.position_x,firstCard.position_y,firstCard.width,firstCard.height)
 
         screen.blit(face_down.image, (200, 200))
-        face_down.position_x, face_down.position_y = 300, 200
+        face_down.position_x, face_down.position_y = 200, 200
         horizontal, vertical = face_down.image.get_size()
         face_down.width = horizontal
         face_down.height = vertical
@@ -136,6 +138,11 @@ def main():
         for player in game.players:
             if player.turn:
                 show_hand(screen, player)
+                if swapped==0:
+                    print("enter if statement")
+                    game.switch_turn()
+                    swapped=1
+                    break
                 for event in events:
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
@@ -143,11 +150,22 @@ def main():
                         clicked_cards = [c for c in player.hand if c.rect.collidepoint(pos)]
                         for c in clicked_cards:
                             player.selected_card=c
-                            player.selected_card.show()
                         if firstCard.rect.collidepoint(pos):
-                            player.swapCards([player.selected_card],firstCard)
+                            player.swap_cards(game.deck,False)
+                            load_card_images(player)
+                            show_hand(screen,player)
+                            firstCard=game.deck.faceUp[len(game.deck.faceUp)-1]
+                            firstCard.image=pygame.image.load("deck/" + str(firstCard.val) +"-"+str(firstCard.suit)+".jpg")
+                            swapped-=1
                         elif face_down.rect.collidepoint(pos):
-                            player.swapCards([player.selected_card],face_down)
+                            player.swap_cards(game.deck,True)
+                            load_card_images(player)
+                            show_hand(screen,player)
+                            firstCard=game.deck.faceUp[len(game.deck.faceUp)-1]
+                            firstCard.image=pygame.image.load("deck/" + str(firstCard.val) +"-"+str(firstCard.suit)+".jpg")
+                            face_down=game.deck.cards[len(game.deck.cards)-1]
+                            face_down.image=pygame.image.load("deck/face-down.jpg")
+                            swapped-=1
                         
                 #turn(player)
                 #print("player turn")

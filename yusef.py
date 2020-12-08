@@ -33,15 +33,18 @@ class Deck:
     def shuffle(self):
         shuffle(self.cards)
 
-    def drawCard(self):
-        return self.cards.pop()
+    def drawCard(self,face_down:bool): # from face-down pile
+        if face_down is True:
+            return self.cards.pop()
+        elif face_down is False:
+            return self.faceUp.pop()
     
     def drawFirstCard(self):
-        card=self.drawCard()
+        card=self.drawCard(True)
         while card.val < 7:
             self.cards.append(card)
             self.shuffle()
-            card=self.drawCard()
+            card=self.drawCard(True)
         self.faceUp.append(card)
 
 class Player:
@@ -53,19 +56,10 @@ class Player:
         self.done=False
         self.selected_card=None
 
-    def drawHand(self,deck,numberCards):
-        vals=set([])
+    def drawHand(self,deck:Deck,numberCards:int,face_down:bool): # from face-down pile. eventually, *** i could make another parameter - true or false for face-down or face-up
         while numberCards!=0:
-            drawn=deck.drawCard()
+            drawn=deck.drawCard(face_down)
             self.hand.append(drawn)
-            if drawn.val not in vals:
-                vals.add(drawn.val)
-            else:
-                if drawn.val not in self.duplicates:
-                    self.duplicates[drawn.val]=2
-                else:
-                    self.duplicates[drawn.val]+=1
-                sorted(self.duplicates,reverse=True)
             numberCards-=1
         return self
     
@@ -86,14 +80,13 @@ class Player:
                 maximum=card.val
         return maximum
 
-    def swapCards(self, toSwap:list, replaceWith:Card): # returns the cards that i put back onto deck pile
-        for card in self.hand:
-            if card in toSwap:
-                self.hand.remove(card)
-        self.hand.append(replaceWith)
-        if toSwap[0] in self.duplicates:
-            del self.duplicates[toSwap[0].val]
-        return toSwap[0]
+    def swap_cards(self, deck:Deck, face_down:bool): 
+        # puts toSwap onto face up, no matter what
+        # either removes from face down or face up pile
+        to_swap=self.selected_card
+        self.hand.remove(to_swap)
+        self.drawHand(deck,1,face_down)
+        deck.faceUp.append(to_swap)
 
 class Game:
     def __init__(self):
@@ -107,56 +100,15 @@ class Game:
     def start(self):
         self.deck.shuffle()
         for player in self.players:
-            player.drawHand(self.deck,5)
+            player.drawHand(self.deck,5,True)
         self.deck.drawFirstCard()
         self.players[0].turn=True
 
-    def switchTurn(self):
+    def switch_turn(self):
         for i,player in enumerate(self.players):
-            if player.turn==True:
+            if player.turn:
                 player.turn=False
                 if i==len(self.players)-1:
                     self.players[0].turn=True
                 else:
                     self.players[i+1].turn=True
-
-def get_sums(decks:list) -> list:
-    sums=[]
-    for deck in decks:
-        sumDeck=0
-        for card in deck:
-            value=card[:2].strip()
-            if value=="A": sumDeck+=1
-            elif value=="J": sumDeck+=10
-            elif value=="Q": sumDeck+=10
-            elif value=="K": sumDeck+=10
-            elif value=="Jo": sumDeck+=0
-            else: sumDeck+=int(value)
-        sums.append(sumDeck)
-    return sums
-
-""" deck=Deck()
-print("\n---------\n")
-deck.shuffle()
-deck.show()
-print("\n---------\n")
-emily=Player("Emily")
-emily.drawHand(deck,5).showHand()
-print("\n---------\n")
-daniel=Player("Daniel")
-daniel.drawHand(deck,5).showHand()
-
-# drawing first card in yusef - must be >= 7
-print("\n---------\n") """
-
-# emily's turn
-# if emily.duplicateVals()==True and next(iter(emily.duplicates))*emily.duplicates[next(iter(emily.duplicates))] <= card:
-#     # replace emily's duplicate values in hand with card
-#     dup=next(iter(emily.duplicates))
-#     swapOut=[]
-#     for emily_card in emily.hand:
-#         if emily_card.val==dup:
-#             swapOut.append(emily_card)
-#     card=emily.swapCards(swapOut,card)
-
-#userGame=Game()
