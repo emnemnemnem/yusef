@@ -95,6 +95,8 @@ def main():
     print("Game has started")
     firstCard=game.deck.faceUp[0]
     firstCard.image=pygame.image.load("deck/" + str(firstCard.val) +"-"+str(firstCard.suit)+".jpg")
+    face_down=game.deck.cards[len(game.deck.cards)-1]
+    face_down.image=pygame.image.load("deck/face-down.jpg")
 
     pygame.init()
     pygame.display.init()
@@ -111,6 +113,8 @@ def main():
     game_is_running = True
     while game_is_running:
         screen.fill((252,204,210))
+        screen.blit(firstCard.image, (300, 200))
+        screen.blit(face_down.image, (200, 200))
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -126,7 +130,8 @@ def main():
                         # get a list of all sprites that are under the mouse cursor
                         clicked_cards = [c for c in player.hand if c.rect.collidepoint(pos)]
                         for c in clicked_cards:
-                            c.show()
+                            player.selected_card=c
+                            player.selected_card.show()
                 #turn(player)
                 #print("player turn")
                 #if player.done:
