@@ -1,5 +1,3 @@
-#two-player yusef
-import pygame
 from random import shuffle
 
 class Card:
@@ -14,10 +12,6 @@ class Card:
 
     def show(self):
         print("{} of {}".format(self.val,self.suit))
-
-    def isClicked(self):
-        self.rect=pygame.Rect(self.position_x,self.position_y,self.width,self.height)
-        return pygame.mouse.get_pressed()[0] and self.rect.collidepoint(pygame.mouse.get_pos())
 
 class Deck:
     def __init__(self):

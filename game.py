@@ -87,8 +87,7 @@ def winner_goes_first(winner, loser):
     loser.turn = False
 
 def main():
-    sc_width, sc_height = 555, 555
-    selected_card_y_pos = 330
+    sc_width, sc_height = 600, 555
     font_size = 30
 
     game=Game()
@@ -98,8 +97,8 @@ def main():
     firstCard.image=pygame.image.load("deck/" + str(firstCard.val) +"-"+str(firstCard.suit)+".jpg")
 
     pygame.init()
+    pygame.display.init()
     screen = pygame.display.set_mode((sc_width, sc_height))
-    screen.fill(green)
 
     for player in game.players:
         load_card_images(player)
@@ -108,9 +107,10 @@ def main():
     pygame.font.init()
     my_font = pygame.font.SysFont('Times New Roman', font_size)
 
-    """Main Game Loop"""
+    #Main Game Loop
     game_is_running = True
     while game_is_running:
+        screen.fill((0,200,50))
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -134,7 +134,7 @@ def main():
                     #player.done=False
 
         #show_player_scores(screen, player1, player2)
-        #pygame.display.update()
+        pygame.display.update()
 
         #winner = evaluate(player1,player2)
         # if winner:
