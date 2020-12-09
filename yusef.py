@@ -10,6 +10,7 @@ class Card:
         self.height=None
         self.position_x, self.position_y = 0,0
         self.rect=None
+        self.selected=False
 
     def show(self):
         print("{} of {}".format(self.val,self.suit))

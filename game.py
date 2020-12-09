@@ -2,7 +2,7 @@ import pygame
 from yusef import *
 green = (0, 200, 50)
 
-def show_hand(screen, player):
+def show_hand(screen, player): # *** edit so i can show selected hand too
     """Displays all cards in hand of player on pygame display object"""
     x, y, space_between_cards = 5, 462, 5
     load_card_images(player)
@@ -142,7 +142,9 @@ def main():
             if player.turn:
                 show_hand(screen, player)
                 if swapped==0:
+                    pygame.time.wait(1000)
                     screen.fill((0,0,0))
+                    pygame.display.update()
                     pygame.time.wait(5000)
                     game.switch_turn()
                     swapped=1
@@ -158,12 +160,14 @@ def main():
                         clicked_cards = [c for c in player.hand if c.rect.collidepoint(pos)]
                         for c in clicked_cards:
                             if len(player.selected_card)>0 and c.val == player.selected_card[0].val:
-                                player.selected_card.append(c)
+                                if c not in player.selected_card:
+                                    player.selected_card.append(c)
                             else:
                                 player.selected_card=[c]
                         if firstCard.rect.collidepoint(pos):
                             player.swap_cards(game.deck,False)
                             load_card_images(player)
+                            screen.fill((252,204,210))
                             show_hand(screen,player)
                             firstCard=game.deck.faceUp[len(game.deck.faceUp)-1]
                             firstCard.image=pygame.image.load("deck/" + str(firstCard.val) +"-"+str(firstCard.suit)+".jpg")
@@ -171,6 +175,7 @@ def main():
                         elif face_down.rect.collidepoint(pos):
                             player.swap_cards(game.deck,True)
                             load_card_images(player)
+                            screen.fill((252,204,210))
                             show_hand(screen,player)
                             firstCard=game.deck.faceUp[len(game.deck.faceUp)-1]
                             firstCard.image=pygame.image.load("deck/" + str(firstCard.val) +"-"+str(firstCard.suit)+".jpg")
