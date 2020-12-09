@@ -85,12 +85,15 @@ class Player:
     def swap_cards(self, deck:Deck, face_down:bool): 
         # puts toSwap onto face up, no matter what
         # either removes from face down or face up pile
+        print("start swap")
         to_swap=self.selected_card # this is a list
         for card in to_swap:
             self.hand.remove(card)
+            print("to_swap: "+str(card.show()))
         self.drawHand(deck,1,face_down)
         for card in to_swap:
             deck.faceUp.append(card)
+        print("end swap")
 
 class Game:
     def __init__(self):
