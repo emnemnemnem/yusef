@@ -118,15 +118,19 @@ class Game:
                     self.players[i+1].turn=True
                 break
 
-    def call_yusef(self,player):
+    def call_yusef(self,player,screen):
         self.update_scores()
         for compare in self.players:
             if compare==player:
                 continue
             elif compare.score<=player.score:
-                print("You lose")
+                myfont = pygame.font.SysFont('Comic Sans MS', 30)
+                textsurface = myfont.render(player.name+" loses", False, (0, 0, 0))
+                screen.blit(textsurface,(100,400))
             else:
-                print("You win!")
+                myfont = pygame.font.SysFont('Comic Sans MS', 30)
+                textsurface = myfont.render(player.name+" wins", False, (0, 0, 0))
+                screen.blit(textsurface,(100,400))
 
     def update_scores(self):
         for player in self.players:

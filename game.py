@@ -114,6 +114,8 @@ def main():
     game_is_running = True
     yusef_button=button((128,128,128),450,500,150,50,'Call yusef')
     swapped=1
+    turns=0
+    threshold=3*game.num_players
     while game_is_running:
         screen.fill((252,204,210))
         screen.blit(firstCard.image, (300, 200))
@@ -140,6 +142,9 @@ def main():
 
         for player in game.players:
             if player.turn:
+                myfont = pygame.font.SysFont('Comic Sans MS', 30)
+                textsurface = myfont.render(player.name+"'s turn", False, (0, 0, 0))
+                screen.blit(textsurface,(100,400))
                 show_hand(screen, player)
                 if swapped==0:
                     pygame.time.wait(1000)
@@ -147,16 +152,25 @@ def main():
                     pygame.display.update()
                     pygame.time.wait(5000)
                     game.switch_turn()
+                    turns+=1
                     swapped=1
                     break
                 for event in events:
                     pos = pygame.mouse.get_pos()
                     if event.type==pygame.MOUSEBUTTONDOWN:
                         if yusef_button.isOver(pos):
-                            game.call_yusef(player)
-                            print("yusef button clicked")
-                            pygame.time.wait(2000)
-                            game_is_running=False
+                            if turns<=threshold:
+                                font = pygame.font.SysFont('Comic Sans MS', 20)
+                                textsurface = font.render("Cannot call yusef before three rounds are over", False, (0, 0, 0))
+                                screen.blit(textsurface,(50,300))
+                                pygame.display.update()
+                                pygame.time.wait(3000)
+                                break
+                            else:
+                                game.call_yusef(player,screen)
+                                print("yusef button clicked")
+                                pygame.time.wait(2000)
+                                game_is_running=False
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
                         # get a list of all sprites that are under the mouse cursor
