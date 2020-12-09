@@ -182,6 +182,13 @@ def main():
                             else:
                                 player.selected_card=[c]
                         if firstCard.rect.collidepoint(pos):
+                            if len(player.selected_card)==0:
+                                font = pygame.font.SysFont('Comic Sans MS', 20)
+                                textsurface = font.render("Please select a card from your deck", False, (0, 0, 0))
+                                screen.blit(textsurface,(50,300))
+                                pygame.display.update()
+                                pygame.time.wait(3000)
+                                break
                             player.swap_cards(game.deck,False)
                             load_card_images(player)
                             screen.fill((252,204,210))
@@ -190,6 +197,13 @@ def main():
                             firstCard.image=pygame.image.load("deck/" + str(firstCard.val) +"-"+str(firstCard.suit)+".jpg")
                             swapped-=1
                         elif face_down.rect.collidepoint(pos):
+                            if len(player.selected_card)==0:
+                                font = pygame.font.SysFont('Comic Sans MS', 20)
+                                textsurface = font.render("Please select a card from your deck", False, (0, 0, 0))
+                                screen.blit(textsurface,(50,300))
+                                pygame.display.update()
+                                pygame.time.wait(3000)
+                                break
                             player.swap_cards(game.deck,True)
                             load_card_images(player)
                             screen.fill((252,204,210))

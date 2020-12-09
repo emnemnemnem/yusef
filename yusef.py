@@ -88,8 +88,8 @@ class Player:
         print("start swap")
         to_swap=self.selected_card # this is a list
         for card in to_swap:
-            self.hand.remove(card)
             print("to_swap: "+str(card.show()))
+            self.hand.remove(card)
         self.drawHand(deck,1,face_down)
         for card in to_swap:
             deck.faceUp.append(card)
@@ -130,10 +130,12 @@ class Game:
                 myfont = pygame.font.SysFont('Comic Sans MS', 30)
                 textsurface = myfont.render(player.name+" loses", False, (0, 0, 0))
                 screen.blit(textsurface,(100,400))
+                pygame.display.update()
             else:
                 myfont = pygame.font.SysFont('Comic Sans MS', 30)
                 textsurface = myfont.render(player.name+" wins", False, (0, 0, 0))
                 screen.blit(textsurface,(100,400))
+                pygame.display.update()
 
     def update_scores(self):
         for player in self.players:
