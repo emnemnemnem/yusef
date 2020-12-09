@@ -56,6 +56,7 @@ class Player:
         self.turn=False
         self.done=False
         self.selected_card=[] # list of selected cards
+        self.score=0
 
     def drawHand(self,deck:Deck,numberCards:int,face_down:bool): # from face-down pile. eventually, *** i could make another parameter - true or false for face-down or face-up
         while numberCards!=0:
@@ -116,6 +117,21 @@ class Game:
                 else:
                     self.players[i+1].turn=True
                 break
+
+    def call_yusef(self,player):
+        self.update_scores()
+        for compare in self.players:
+            if compare==player:
+                continue
+            elif compare.score<=player.score:
+                print("You lose")
+            else:
+                print("You win!")
+
+    def update_scores(self):
+        for player in self.players:
+            for card in player.hand:
+                player.score+=card.val
 
 class button():
     def __init__(self, color, x,y,width,height, text=''):

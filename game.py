@@ -153,7 +153,10 @@ def main():
                     pos = pygame.mouse.get_pos()
                     if event.type==pygame.MOUSEBUTTONDOWN:
                         if yusef_button.isOver(pos):
+                            game.call_yusef(player)
                             print("yusef button clicked")
+                            pygame.time.wait(2000)
+                            game_is_running=False
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
                         # get a list of all sprites that are under the mouse cursor
