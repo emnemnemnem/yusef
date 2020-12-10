@@ -61,14 +61,13 @@ def evaluate(player1, player2):
         player1.selected_card, player2.selected_card = None, None
     return round_winner
 
-def show_player_scores(screen, player1, player2):
-    """Left corner is player 1 score, right corner is player 2 score"""
+def show_player_scores(screen, players):
     font_size = 12
     my_font = pygame.font.SysFont('Times New Roman', font_size)
-    textsurface1 = my_font.render("Player 1 score: " + str(player1.score), False, (0, 0, 0))
-    textsurface2 = my_font.render("Player 2 score: " + str(player2.score), False, (0, 0, 0))
-    screen.blit(textsurface1, (0,0))
-    screen.blit(textsurface2, (470,0))
+    for i,player in enumerate(players):
+        score = my_font.render(str(player.name)+" score: " + str(player.score), False, (0, 0, 0))
+        screen.blit(score, (300,(i+50)*100))
+    pygame.display.update()
 
 def getCoords(x,y):
     return [x,y]
@@ -170,7 +169,16 @@ def main():
                                 game.call_yusef(player,screen)
                                 print("yusef button clicked")
                                 pygame.time.wait(2000)
-                                game_is_running=False
+                                play=0
+                                while play==0:
+                                    show_player_scores(screen,game.players)
+                                    play_again_button=button((128,128,128),450,300,150,50,'Play again')
+                                    play_again_button.draw(screen)
+                                    if play_again_button.isOver(pos):
+                                        game.play_again()
+                                        play=1
+                                    pygame.display.update()
+                                #game_is_running=False
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
                         # get a list of all sprites that are under the mouse cursor

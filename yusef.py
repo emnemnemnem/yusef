@@ -57,6 +57,7 @@ class Player:
         self.done=False
         self.selected_card=[] # list of selected cards
         self.score=0
+        self.total_cards=0
 
     def drawHand(self,deck:Deck,numberCards:int,face_down:bool): # from face-down pile. eventually, *** i could make another parameter - true or false for face-down or face-up
         while numberCards!=0:
@@ -93,6 +94,7 @@ class Player:
         self.drawHand(deck,1,face_down)
         for card in to_swap:
             deck.faceUp.append(card)
+        self.selected_card=[]
         print("end swap")
 
 class Game:
@@ -122,25 +124,36 @@ class Game:
                 break
 
     def call_yusef(self,player,screen):
-        self.update_scores()
+        self.update_total_cards()
         for compare in self.players:
             if compare==player:
                 continue
-            elif compare.score<=player.score:
+            elif compare.total_cards<=player.total_cards:
                 myfont = pygame.font.SysFont('Comic Sans MS', 30)
                 textsurface = myfont.render(player.name+" loses", False, (0, 0, 0))
                 screen.blit(textsurface,(100,300))
                 pygame.display.update()
-            else:
-                myfont = pygame.font.SysFont('Comic Sans MS', 30)
-                textsurface = myfont.render(player.name+" wins", False, (0, 0, 0))
-                screen.blit(textsurface,(100,300))
-                pygame.display.update()
+                player.score+=30
+                return
+        myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        textsurface = myfont.render(player.name+" wins", False, (0, 0, 0))
+        screen.blit(textsurface,(100,300))
+        pygame.display.update()
+        for compare in self.players:
+            if compare==player:
+                continue
+            compare.score+=compare.total_cards
 
-    def update_scores(self):
+    def update_total_cards(self):
         for player in self.players:
             for card in player.hand:
-                player.score+=card.val
+                player.total_cards+=card.val
+
+    def play_again(self):
+        self.deck=Deck()
+        for player in self.players:
+            player.hand=[]
+        self.start()
 
 class button():
     def __init__(self, color, x,y,width,height, text=''):
