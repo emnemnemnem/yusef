@@ -87,8 +87,8 @@ class Player:
         # either removes from face down or face up pile
         print("start swap")
         to_swap=self.selected_card # this is a list
+        print("to_swap: "+str(to_swap))
         for card in to_swap:
-            print("to_swap: "+str(card.show()))
             self.hand.remove(card)
         self.drawHand(deck,1,face_down)
         for card in to_swap:
@@ -129,12 +129,12 @@ class Game:
             elif compare.score<=player.score:
                 myfont = pygame.font.SysFont('Comic Sans MS', 30)
                 textsurface = myfont.render(player.name+" loses", False, (0, 0, 0))
-                screen.blit(textsurface,(100,400))
+                screen.blit(textsurface,(100,300))
                 pygame.display.update()
             else:
                 myfont = pygame.font.SysFont('Comic Sans MS', 30)
                 textsurface = myfont.render(player.name+" wins", False, (0, 0, 0))
-                screen.blit(textsurface,(100,400))
+                screen.blit(textsurface,(100,300))
                 pygame.display.update()
 
     def update_scores(self):
