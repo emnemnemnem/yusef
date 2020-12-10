@@ -62,11 +62,10 @@ def evaluate(player1, player2):
     return round_winner
 
 def show_player_scores(screen, players):
-    font_size = 12
-    my_font = pygame.font.SysFont('Times New Roman', font_size)
+    myfont = pygame.font.SysFont('Comic Sans MS', 30)
     for i,player in enumerate(players):
-        score = my_font.render(str(player.name)+" score: " + str(player.score), False, (0, 0, 0))
-        screen.blit(score, (300,(i+50)*100))
+        score = myfont.render(str(player.name)+" score: " + str(player.score), False, (0, 0, 0))
+        screen.blit(score, (300,(i+1)*100))
     pygame.display.update()
 
 def getCoords(x,y):
@@ -174,10 +173,10 @@ def main():
                                     show_player_scores(screen,game.players)
                                     play_again_button=button((128,128,128),450,300,150,50,'Play again')
                                     play_again_button.draw(screen)
+                                    pygame.display.update()
                                     if play_again_button.isOver(pos):
                                         game.play_again()
                                         play=1
-                                    pygame.display.update()
                                 #game_is_running=False
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
