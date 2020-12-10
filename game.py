@@ -46,20 +46,9 @@ def show_winner(screen, player1, player2, my_font):
     textsurface = my_font.render("The winner is: " + winner, False, (0, 0, 0))
     screen.blit(textsurface, (100, 270))
 
-def update_selected_card_position(player, new_y_position):
+def update_selected_card_position(card, new_y_position):
     """Change the Y position of selected card to move card to played position"""
-    if player.selected_card:
-        player.selected_card.position_y = new_y_position
-
-def evaluate(player1, player2):
-    """determines who won round and updates their score"""
-    round_winner = None
-    if player1.selected_card and player2.selected_card:
-        pygame.time.delay(1000)
-        round_winner = player1 if player1.selected_card > player2.selected_card else player2
-        round_winner.score += 1
-        player1.selected_card, player2.selected_card = None, None
-    return round_winner
+    card.position_y = new_y_position
 
 def show_player_scores(screen, players):
     myfont = pygame.font.SysFont('Comic Sans MS', 30)
@@ -67,23 +56,6 @@ def show_player_scores(screen, players):
         score = myfont.render(str(player.name)+" score: " + str(player.score), False, (0, 0, 0))
         screen.blit(score, (300,(i+1)*100))
     pygame.display.update()
-
-def getCoords(x,y):
-    return [x,y]
-
-def turn(player):
-    print("start turn")
-    select_card(player)
-    print("finish turn")
-    #player.swapCards([player.selected_card],deck.drawCard())
-    #update_selected_card_position(player, new_y_position)
-    #player.done=True
-    #player.selected_card=None
-
-def winner_goes_first(winner, loser):
-    """Sets the winner to the starter of the next round"""
-    winner.turn = True
-    loser.turn = False
 
 def main():
     sc_width, sc_height = 600, 555
@@ -112,7 +84,7 @@ def main():
     game_is_running = True
     yusef_button=button((128,128,128),450,500,150,50,'Call yusef')
     swapped=1
-    turns=0
+    turns=10000 # ***for testing purposes... change to 0 later
     threshold=3*game.num_players
     while game_is_running:
         screen.fill((252,204,210))
@@ -166,17 +138,19 @@ def main():
                                 break
                             else:
                                 game.call_yusef(player,screen)
-                                print("yusef button clicked")
                                 pygame.time.wait(2000)
-                                play=0
-                                while play==0:
+                                play=True
+                                while play:
                                     show_player_scores(screen,game.players)
                                     play_again_button=button((128,128,128),450,300,150,50,'Play again')
                                     play_again_button.draw(screen)
                                     pygame.display.update()
-                                    if play_again_button.isOver(pos):
-                                        game.play_again()
-                                        play=1
+                                    for ev in events:
+                                        pos = pygame.mouse.get_pos()
+                                        if event.type==pygame.MOUSEBUTTONDOWN:
+                                            if play_again_button.isOver(pos):
+                                                play=False
+                                                game.play_again()
                                 #game_is_running=False
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
@@ -186,8 +160,13 @@ def main():
                             if len(player.selected_card)>0 and c.val == player.selected_card[0].val:
                                 if c not in player.selected_card:
                                     player.selected_card.append(c)
+                                    update_selected_card_position(c,400)
                             else:
+                                if len(player.selected_card)>0:
+                                    for c in player.selected_card:
+                                        update_selected_card_position(c,462)
                                 player.selected_card=[c]
+                                update_selected_card_position(c,400)
                         if firstCard.rect.collidepoint(pos):
                             if len(player.selected_card)==0:
                                 font = pygame.font.SysFont('Comic Sans MS', 20)
@@ -220,28 +199,8 @@ def main():
                             face_down=game.deck.cards[len(game.deck.cards)-1]
                             face_down.image=pygame.image.load("deck/face-down.jpg")
                             swapped-=1
-                        
-                #turn(player)
-                #print("player turn")
-                #if player.done:
-                    #game.switchTurn()
-                    #player.done=False
 
-        #show_player_scores(screen, player1, player2)
         pygame.display.update()
-
-        #winner = evaluate(player1,player2)
-        # if winner:
-        #     if winner == player1:
-        #         winner_goes_first(player1, player2)
-        #     else:
-        #         winner_goes_first(player2, player1)
-
-        # if not player1.hand and not player2.hand:
-        #     show_winner(screen, player1, player2, my_font)
-        #     pygame.display.update()
-        #     pygame.time.delay(delay_time_ms)
-        #     game_is_running = False
 
 if __name__ == '__main__':
     main()
